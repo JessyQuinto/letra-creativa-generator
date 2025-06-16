@@ -2,7 +2,7 @@
 import { useStore } from '@/store/useStore';
 
 export const useCartOptimized = () => {
-  const { cartItems, addToCart, removeFromCart, updateQuantity, clearCart } = useStore();
+  const { cartItems, addToCart, removeFromCart, updateCartQuantity, clearCart } = useStore();
 
   const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   
@@ -16,7 +16,7 @@ export const useCartOptimized = () => {
     total,
     addToCart,
     removeFromCart,
-    updateQuantity,
+    updateQuantity: updateCartQuantity,
     clearCart
   };
 };
