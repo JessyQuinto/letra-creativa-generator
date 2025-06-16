@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import { CreditCard, MapPin, User, Phone, Mail } from 'lucide-react';
 import { useCartOptimized } from '@/hooks/useCartOptimized';
 import { useAuthEnhanced } from '@/context/AuthContextEnhanced';
-import { useToast } from '@/hooks/useToast';
+import { useToast } from '@/hooks/use-toast';
 
 interface CheckoutData {
   email: string;
