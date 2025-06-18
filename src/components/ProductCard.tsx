@@ -22,7 +22,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
     e.preventDefault();
     e.stopPropagation();
     
-    // Convert to CartItem format
     const cartItem = {
       id: product.id,
       name: product.name,
@@ -30,6 +29,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       image: product.image,
       quantity: 1,
       slug: product.slug,
+      description: product.description,
       artisan: product.artisan,
       origin: product.origin
     };
@@ -142,6 +142,17 @@ const ProductCard = ({ product }: ProductCardProps) => {
       </div>
     </article>
   );
+};
+
+const handleProductClick = () => {
+  navigate(`/producto/${product.slug}`);
+};
+
+const handleKeyDown = (e: React.KeyboardEvent) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    handleProductClick();
+  }
 };
 
 export default ProductCard;

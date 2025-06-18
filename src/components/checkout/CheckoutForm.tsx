@@ -1,9 +1,12 @@
-
 import React, { useState } from 'react';
-import { CreditCard, MapPin, User, Phone, Mail } from 'lucide-react';
-import { useCartOptimized } from '@/hooks/useCartOptimized';
-import { useStore } from '@/store/useStore';
-import { useNotifications } from '@/hooks/useNotifications';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useCart } from '@/hooks/useCart';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { z } from 'zod';
 
 interface CheckoutData {
   email: string;
@@ -16,7 +19,7 @@ interface CheckoutData {
 }
 
 const CheckoutForm: React.FC = () => {
-  const { items, total, clearCart } = useCartOptimized();
+  const { items, total, clearCart } = useCart();
   const { auth } = useStore();
   const { user, isLoggedIn } = auth;
   const { showSuccess, showError } = useNotifications();

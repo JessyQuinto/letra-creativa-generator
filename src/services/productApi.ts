@@ -8,66 +8,65 @@ const mockCategories: Category[] = [
   { id: 3, name: 'Joyería', slug: 'joyeria', image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400' },
 ];
 
-// Optimized mock data for featured products
+// Products that match the shop data
 const mockProducts: Product[] = [
   {
     id: 1,
-    name: 'Canasta Tradicional',
-    slug: 'canasta-tradicional',
-    price: 45000,
+    name: 'Canasta Artesanal',
+    slug: 'canasta-artesanal',
+    price: 85000,
     image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
-    description: 'Canasta tejida a mano por artesanos del Chocó',
+    description: 'Hermosa canasta tejida a mano con técnicas tradicionales',
     categoryId: 1,
     producerId: 1,
-    stock: 15,
+    stock: 12,
     featured: true,
     rating: 4.8,
     createdAt: new Date().toISOString(),
-    artisan: 'María del Carmen Mosquera',
-    origin: 'Quibdó, Chocó'
+    artisan: 'Carmen López',
+    origin: 'Chocó'
   },
   {
     id: 2,
-    name: 'Collar de Tagua',
-    slug: 'collar-tagua',
-    price: 32000,
+    name: 'Collar Tradicional',
+    slug: 'collar-tradicional',
+    price: 45000,
     image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
-    description: 'Collar elaborado con semillas de tagua del Pacífico',
+    description: 'Collar elaborado con materiales naturales del Pacífico',
     categoryId: 3,
     producerId: 2,
     stock: 8,
     featured: true,
     rating: 4.9,
     createdAt: new Date().toISOString(),
-    artisan: 'Yurany Palacios',
-    origin: 'Nuquí, Chocó'
+    artisan: 'Ana Mosquera',
+    origin: 'Chocó'
   },
   {
     id: 3,
-    name: 'Vasija de Barro',
-    slug: 'vasija-barro',
-    price: 65000,
+    name: 'Vasija Ceremonial',
+    slug: 'vasija-ceremonial',
+    price: 120000,
     image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
-    description: 'Vasija ceremonial de barro cocido',
+    description: 'Vasija de barro cocido con diseños ancestrales',
     categoryId: 2,
     producerId: 3,
     stock: 5,
     featured: true,
     rating: 4.7,
     createdAt: new Date().toISOString(),
-    artisan: 'Esteban Mosquera',
-    origin: 'Istmina, Chocó'
+    artisan: 'Miguel Santos',
+    origin: 'Chocó'
   }
 ];
 
-// Optimized API functions with caching simulation
 export const fetchCategories = async (): Promise<Category[]> => {
-  await new Promise(resolve => setTimeout(resolve, 100)); // Reduced timeout
+  await new Promise(resolve => setTimeout(resolve, 100));
   return mockCategories;
 };
 
 export const fetchFeaturedProducts = async (): Promise<Product[]> => {
-  await new Promise(resolve => setTimeout(resolve, 100)); // Reduced timeout
+  await new Promise(resolve => setTimeout(resolve, 100));
   return mockProducts;
 };
 
@@ -77,7 +76,6 @@ export const fetchProductBySlug = async (slug: string): Promise<ProductWithStory
   
   if (!product) return null;
   
-  // Add cultural story to product
   return {
     ...product,
     story: {

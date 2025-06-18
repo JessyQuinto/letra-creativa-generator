@@ -34,7 +34,6 @@ export interface Product {
   featured: boolean;
   rating?: number;
   createdAt: string;
-  // Optional fields for compatibility
   artisan?: string;
   origin?: string;
 }
@@ -66,6 +65,7 @@ export interface CartItem {
   image: string;
   quantity: number;
   slug: string;
+  description: string;
   artisan?: string;
   origin?: string;
 }

@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -49,6 +48,7 @@ const ProductDetail = () => {
       image: product.image,
       quantity,
       slug: product.slug,
+      description: product.description,
       artisan: product.artisan,
       origin: product.origin
     };
