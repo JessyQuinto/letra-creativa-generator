@@ -1,23 +1,23 @@
 
 import React, { useState } from 'react';
-import { Heart, Minus, Plus, Share2, Truck, ArrowLeft } from 'lucide-react';
+import { Heart, Minus, Plus, Share2, Truck, ArrowLeft, Clock, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Product, Producer, Category } from '@/types'; // Import from centralized types
-import { getProducerById, getCategoryById } from '@/data/mockData'; // These functions still come from mockData
 import { useCart } from '@/hooks/useCart';
 import { formatCurrency } from '@/lib/utils';
+import { ProductWithStory, getProductWithStory } from '@/services/productStoryService';
+import { Product } from '@/types';
 
 interface ProductDetailProps {
   product: Product;
 }
 
-const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
+const ProductDetail: React.FC<ProductDetailProps> = ({ product: baseProduct }) => {
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
   const navigate = useNavigate();
   
-  const producer = getProducerById(product.producerId);
-  const category = getCategoryById(product.categoryId);
+  // Enriquecer el producto con su historia cultural
+  const product: ProductWithStory = getProductWithStory(baseProduct.id, baseProduct);
 
   const handleQuantityChange = (value: number) => {
     const newQuantity = Math.max(1, Math.min(product.stock, quantity + value));
@@ -33,14 +33,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
   const handleGoBack = () => {
     navigate(-1);
   };
-
-  if (!product || !producer || !category) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-xl text-gray-700">Producto no encontrado</p>
-      </div>
-    );
-  }
 
   return (
     <div className="container-custom py-8">
@@ -58,9 +50,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
         {/* Product Info */}
         <div>
           <div className="mb-6">
-            <Link to={`/productos?categoria=${category.slug}`} className="text-sm text-campo-terracotta hover:underline">
-              {category.name}
-            </Link>
             <h1 className="text-3xl font-serif font-bold text-campo-dark mt-1">{product.name}</h1>
             
             <div className="flex items-center mt-2 mb-4">
@@ -92,18 +81,18 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
           </div>
           
           {/* Artisan Info */}
-          <div className="bg-campo-cream rounded-lg p-4 mb-6">
-            <div className="flex items-center">
-              <img src={producer.image} alt={producer.name} className="w-12 h-12 rounded-full object-cover" />
-              <div className="ml-4">
-                <p className="text-sm text-campo-brown">Hecho por</p>
-                <Link to={`/artesano/${producer.id}`} className="font-medium hover:text-campo-terracotta">
-                  {producer.name}
-                </Link>
-                <p className="text-xs text-gray-500 mt-1">{producer.location}</p>
+          {product.artisan && product.origin && (
+            <div className="bg-campo-cream rounded-lg p-4 mb-6">
+              <div className="flex items-center">
+                <User className="w-12 h-12 text-campo-brown" />
+                <div className="ml-4">
+                  <p className="text-sm text-campo-brown">Hecho por</p>
+                  <p className="font-medium">{product.artisan}</p>
+                  <p className="text-xs text-gray-500 mt-1">{product.origin}</p>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Stock & Quantity */}
           <div className="mb-6">
@@ -168,6 +157,46 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
           </div>
         </div>
       </div>
+
+      {/* Cultural Story Section */}
+      {product.culturalStory && (
+        <div className="mt-16 border-t pt-16">
+          <h2 className="text-2xl font-serif font-bold text-campo-dark mb-8">Historia Cultural</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="relative overflow-hidden rounded-lg">
+              <img 
+                src={product.culturalStory.image} 
+                alt={product.culturalStory.title}
+                className="w-full h-64 object-cover"
+              />
+              <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-semibold text-campo-brown flex items-center space-x-1">
+                <Clock className="h-3 w-3" />
+                <span>{product.culturalStory.readTime}</span>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold text-campo-dark">{product.culturalStory.title}</h3>
+              <div className="flex items-center text-gray-500 text-sm space-x-2">
+                <span>{product.culturalStory.author}</span>
+                <span>•</span>
+                <span>{product.culturalStory.date}</span>
+              </div>
+              <p className="text-gray-600 leading-relaxed">{product.culturalStory.excerpt}</p>
+              
+              <div className="pt-4">
+                <Link 
+                  to={`/stories/${product.culturalStory.id}`}
+                  className="inline-flex items-center px-6 py-3 bg-campo-brown text-white rounded-md hover:bg-opacity-90 transition-colors"
+                >
+                  Leer Historia Completa
+                  <ArrowLeft className="ml-2 h-4 w-4 rotate-180" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
