@@ -1,10 +1,11 @@
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import ErrorBoundary from '@/components/ErrorBoundary';
-import { AuthProvider } from '@/context/AuthContextEnhanced';
 import CookieBanner from '@/components/CookieBanner';
+import ProjectBanner from '@/components/ProjectBanner';
 
 // Pages
 import Index from '@/pages/Index';
@@ -25,13 +26,24 @@ import Terms from '@/pages/Terms';
 import OrderConfirmation from '@/pages/OrderConfirmation';
 import Wishlist from '@/pages/Wishlist';
 
+// Optimized query client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="light" storageKey="choco-artesanal-theme">
-        <AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider defaultTheme="light" storageKey="choco-artesanal-theme">
           <Router>
             <div className="App">
+              <ProjectBanner />
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/about" element={<About />} />
@@ -55,8 +67,8 @@ function App() {
               <CookieBanner />
             </div>
           </Router>
-        </AuthProvider>
-      </ThemeProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
     </ErrorBoundary>
   );
 }

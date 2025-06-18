@@ -114,6 +114,13 @@ const initialFilters: SearchFilters = {
   region: "all"
 };
 
+// Optimized cart calculations
+const calculateCartTotals = (items: CartItem[]) => {
+  const count = items.reduce((sum, item) => sum + item.quantity, 0);
+  const total = items.reduce((sum, item) => sum + item.total, 0);
+  return { count, total };
+};
+
 export const useStore = create<Store>()(
   persist(
     (set, get) => ({
@@ -133,7 +140,7 @@ export const useStore = create<Store>()(
       isLoading: false,
       error: null,
       
-      // Cart actions
+      // Optimized cart actions
       addToCart: (product, quantity = 1) => {
         const { cartItems } = get();
         const existingItem = cartItems.find(item => item.id === product.id);
@@ -159,30 +166,24 @@ export const useStore = create<Store>()(
           newCartItems = [...cartItems, newItem];
         }
         
-        const newCount = newCartItems.reduce((sum, item) => sum + item.quantity, 0);
-        const newTotal = newCartItems.reduce((sum, item) => sum + item.total, 0);
-        
-        localStorage.setItem('lastCartActivity', Date.now().toString());
+        const { count, total } = calculateCartTotals(newCartItems);
         
         set({
           cartItems: newCartItems,
-          cartCount: newCount,
-          cartTotal: newTotal
+          cartCount: count,
+          cartTotal: total
         });
       },
       
       removeFromCart: (productId) => {
         const { cartItems } = get();
         const newCartItems = cartItems.filter(item => item.id !== productId);
-        const newCount = newCartItems.reduce((sum, item) => sum + item.quantity, 0);
-        const newTotal = newCartItems.reduce((sum, item) => sum + item.total, 0);
-        
-        localStorage.setItem('lastCartActivity', Date.now().toString());
+        const { count, total } = calculateCartTotals(newCartItems);
         
         set({
           cartItems: newCartItems,
-          cartCount: newCount,
-          cartTotal: newTotal
+          cartCount: count,
+          cartTotal: total
         });
       },
       
@@ -196,15 +197,12 @@ export const useStore = create<Store>()(
             : item
         );
         
-        const newCount = newCartItems.reduce((sum, item) => sum + item.quantity, 0);
-        const newTotal = newCartItems.reduce((sum, item) => sum + item.total, 0);
-        
-        localStorage.setItem('lastCartActivity', Date.now().toString());
+        const { count, total } = calculateCartTotals(newCartItems);
         
         set({
           cartItems: newCartItems,
-          cartCount: newCount,
-          cartTotal: newTotal
+          cartCount: count,
+          cartTotal: total
         });
       },
       
@@ -218,7 +216,6 @@ export const useStore = create<Store>()(
       
       // Auth actions
       login: (userData, token) => {
-        localStorage.setItem('lastCartActivity', Date.now().toString());
         set({
           auth: {
             user: userData,
@@ -288,7 +285,7 @@ export const useStore = create<Store>()(
       
       updateAddress: (id, addressData) => {
         const { auth } = get();
-        if (!auth.user || !auth.user.addresses) return;
+        if (!auth.user?.addresses) return;
         
         const updatedAddresses = auth.user.addresses.map(addr =>
           addr.id === id ? { ...addr, ...addressData } : addr
@@ -307,7 +304,7 @@ export const useStore = create<Store>()(
       
       deleteAddress: (id) => {
         const { auth } = get();
-        if (!auth.user || !auth.user.addresses) return;
+        if (!auth.user?.addresses) return;
         
         const updatedAddresses = auth.user.addresses.filter(addr => addr.id !== id);
         
@@ -324,7 +321,7 @@ export const useStore = create<Store>()(
       
       setDefaultAddress: (id) => {
         const { auth } = get();
-        if (!auth.user || !auth.user.addresses) return;
+        if (!auth.user?.addresses) return;
         
         const updatedAddresses = auth.user.addresses.map(addr => ({
           ...addr,
@@ -379,7 +376,7 @@ export const useStore = create<Store>()(
   )
 );
 
-// Selectors for better performance
+// Optimized selectors for better performance
 export const useAuth = () => useStore(state => state.auth);
 export const useCartItems = () => useStore(state => state.cartItems);
 export const useCartCount = () => useStore(state => state.cartCount);
