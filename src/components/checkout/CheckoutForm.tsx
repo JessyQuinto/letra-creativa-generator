@@ -1,7 +1,8 @@
+
 import React, { useState } from 'react';
 import { CreditCard, MapPin, User, Phone, Mail } from 'lucide-react';
-import { useCart } from '@/hooks/useCart';
-import { useAuthEnhanced } from '@/context/AuthContextEnhanced';
+import { useCartOptimized } from '@/hooks/useCartOptimized';
+import { useStore } from '@/store/useStore';
 import { useNotifications } from '@/hooks/useNotifications';
 
 interface CheckoutData {
@@ -15,15 +16,16 @@ interface CheckoutData {
 }
 
 const CheckoutForm: React.FC = () => {
-  const { items, total, clearCart } = useCart();
-  const { user, isAuthenticated } = useAuthEnhanced();
+  const { items, total, clearCart } = useCartOptimized();
+  const { auth } = useStore();
+  const { user, isLoggedIn } = auth;
   const { showSuccess, showError } = useNotifications();
   
   const [checkoutData, setCheckoutData] = useState<CheckoutData>({
     email: user?.email || '',
     name: user?.name || '',
     phone: user?.phone || '',
-    address: user?.address || '',
+    address: user?.addresses?.[0]?.address || '',
     city: '',
     zipCode: '',
     paymentMethod: 'card',

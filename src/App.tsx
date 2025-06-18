@@ -5,7 +5,6 @@ import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import CookieBanner from '@/components/CookieBanner';
-import ProjectBanner from '@/components/ProjectBanner';
 
 // Pages
 import Index from '@/pages/Index';
@@ -43,7 +42,6 @@ function App() {
         <ThemeProvider defaultTheme="light" storageKey="choco-artesanal-theme">
           <Router>
             <div className="App">
-              <ProjectBanner />
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/about" element={<About />} />
