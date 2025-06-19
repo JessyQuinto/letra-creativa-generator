@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useStore } from "@/store/useStore";
 import { useNotifications } from "@/hooks/useNotifications";
 import ResponsiveImage from "./ResponsiveImage";
-import { Product, ProductWithStory } from "@/types";
+import { Product, ProductWithStory, CartItem } from "@/types";
 
 interface ProductCardProps {
   product: Product | ProductWithStory;
@@ -17,12 +17,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const { showSuccess } = useNotifications();
   const navigate = useNavigate();
   const inWishlist = wishlist.some(item => item.id === product.id);
-
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
-    const cartItem = {
+    const cartItem: CartItem = {
       id: product.id,
       name: product.name,
       price: product.price,
@@ -142,17 +141,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
       </div>
     </article>
   );
-};
-
-const handleProductClick = () => {
-  navigate(`/producto/${product.slug}`);
-};
-
-const handleKeyDown = (e: React.KeyboardEvent) => {
-  if (e.key === 'Enter' || e.key === ' ') {
-    e.preventDefault();
-    handleProductClick();
-  }
 };
 
 export default ProductCard;

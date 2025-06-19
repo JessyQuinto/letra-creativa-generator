@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCart } from '@/hooks/useCart';
+import { useStore } from '@/store/useStore';
+import { useNotifications } from '@/hooks/useNotifications';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { CreditCard, MapPin, User } from 'lucide-react';
 import { z } from 'zod';
 
 interface CheckoutData {
@@ -23,8 +26,7 @@ const CheckoutForm: React.FC = () => {
   const { auth } = useStore();
   const { user, isLoggedIn } = auth;
   const { showSuccess, showError } = useNotifications();
-  
-  const [checkoutData, setCheckoutData] = useState<CheckoutData>({
+    const [checkoutData, setCheckoutData] = useState<CheckoutData>({
     email: user?.email || '',
     name: user?.name || '',
     phone: user?.phone || '',

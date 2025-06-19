@@ -1,21 +1,9 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { Product, CartItem as BaseCartItem, User as BaseUser, ProductWithStory } from '@/types';
 
-interface Product {
-  id: number;
-  name: string;
-  slug: string;
-  price: number;
-  image: string;
-  description: string;
-  artisan: string;
-  origin: string;
-  category?: string;
-}
-
-interface CartItem extends Product {
-  quantity: number;
+interface CartItem extends BaseCartItem {
   total: number;
 }
 
@@ -30,14 +18,10 @@ interface Address {
   isDefault?: boolean;
 }
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
+interface User extends BaseUser {
   firstName: string;
   lastName: string;
   avatar?: string;
-  phone?: string;
   addresses?: Address[];
 }
 
@@ -66,18 +50,16 @@ interface Store {
   
   // Auth state
   auth: AuthState;
-  
-  // Wishlist state
-  wishlist: Product[];
+    // Wishlist state
+  wishlist: (Product | ProductWithStory)[];
   
   // UI state
   searchQuery: string;
   filters: SearchFilters;
   isLoading: boolean;
   error: string | null;
-  
-  // Cart actions
-  addToCart: (product: Product, quantity?: number) => void;
+    // Cart actions
+  addToCart: (item: BaseCartItem) => void;
   removeFromCart: (productId: number) => void;
   updateCartQuantity: (productId: number, quantity: number) => void;
   clearCart: () => void;
@@ -94,9 +76,8 @@ interface Store {
   updateAddress: (id: string, address: Partial<Address>) => void;
   deleteAddress: (id: string) => void;
   setDefaultAddress: (id: string) => void;
-  
-  // Wishlist actions
-  addToWishlist: (product: Product) => void;
+    // Wishlist actions
+  addToWishlist: (product: Product | ProductWithStory) => void;
   removeFromWishlist: (productId: number) => void;
   
   // UI actions
@@ -139,29 +120,27 @@ export const useStore = create<Store>()(
       filters: initialFilters,
       isLoading: false,
       error: null,
-      
-      // Optimized cart actions
-      addToCart: (product, quantity = 1) => {
+        // Optimized cart actions
+      addToCart: (item) => {
         const { cartItems } = get();
-        const existingItem = cartItems.find(item => item.id === product.id);
+        const existingItem = cartItems.find(cartItem => cartItem.id === item.id);
         
         let newCartItems: CartItem[];
         
         if (existingItem) {
-          newCartItems = cartItems.map(item =>
-            item.id === product.id
+          newCartItems = cartItems.map(cartItem =>
+            cartItem.id === item.id
               ? { 
-                  ...item, 
-                  quantity: item.quantity + quantity, 
-                  total: (item.quantity + quantity) * item.price 
+                  ...cartItem, 
+                  quantity: cartItem.quantity + item.quantity, 
+                  total: (cartItem.quantity + item.quantity) * cartItem.price 
                 }
-              : item
+              : cartItem
           );
         } else {
           const newItem: CartItem = {
-            ...product,
-            quantity,
-            total: product.price * quantity
+            ...item,
+            total: item.price * item.quantity
           };
           newCartItems = [...cartItems, newItem];
         }

@@ -11,6 +11,7 @@ import { Heart, ShoppingCart, Star, Truck, Shield, RotateCcw, Book } from "lucid
 import { useStore } from "@/store/useStore";
 import { useNotifications } from "@/hooks/useNotifications";
 import { fetchProductBySlug } from "@/services/productApi";
+import { CartItem } from "@/types";
 
 const ProductDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -37,11 +38,10 @@ const ProductDetail = () => {
     product?.images || [product?.image || ''].filter(Boolean), 
     [product]
   );
-
   const handleAddToCart = () => {
     if (!product) return;
     
-    const cartItem = {
+    const cartItem: CartItem = {
       id: product.id,
       name: product.name,
       price: product.price,
